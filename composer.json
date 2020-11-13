@@ -1,0 +1,21 @@
+{
+  "name": "uxmz/w3-total-cache",
+  "description": "W3 Total Cache",
+  "type": "wordpress-plugin",
+  "homepage": "https://wordpress.org/plugins/w3-total-cache/",
+  "authors": [
+    {
+      	"name": "BoldGrid",
+      	"homepage": "https://wordpress.org/plugins/w3-total-cache"
+	},
+	{
+		"name": "UX Information Technologies",
+		"homepage": "https://ux.co.mz"
+	}
+  ],
+  "minimum-stability":"stable",
+  "license":"GPL-2.0+",
+  "require": {
+	"php": ">=5.3.0"
+  }
+}
