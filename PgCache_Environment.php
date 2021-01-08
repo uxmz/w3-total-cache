@@ -189,7 +189,7 @@ class PgCache_Environment {
 
 			try{
 			if ( file_exists( $dir ) && !is_writeable( $dir ) )
-				Util_WpFile::delete_folder( $dir, '', $_SERVER['REQUEST_URI'] );
+				Util_WpFile::delete_folder( $dir, '', !empty($_SERVER['REQUEST_URI_INIT']) ? $_SERVER['REQUEST_URI_INIT'] : $_SERVER['REQUEST_URI'] );
 		} catch ( Util_WpFile_FilesystemRmdirException $ex ) {
 			$exs->push( $ex );
 		}

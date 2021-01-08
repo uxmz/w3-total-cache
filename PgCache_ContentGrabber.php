@@ -125,7 +125,7 @@ class PgCache_ContentGrabber {
 			'host' => Util_Environment::host_port()
 		);
 
-		$this->_request_uri = $_SERVER['REQUEST_URI'];
+		$this->_request_uri = !empty($_SERVER['REQUEST_URI_INIT']) ? $_SERVER['REQUEST_URI_INIT'] : $_SERVER['REQUEST_URI'];
 		$this->_lifetime = $this->_config->get_integer( 'pgcache.lifetime' );
 		$this->_late_init = $this->_config->get_boolean( 'pgcache.late_init' );
 		$this->_late_caching = $this->_config->get_boolean( 'pgcache.late_caching' );
@@ -2202,7 +2202,7 @@ class PgCache_ContentGrabber {
 	 */
 	static protected function log( $msg ) {
 		$data = sprintf( "[%s] [%s] [%s] %s\n", date( 'r' ),
-			$_SERVER['REQUEST_URI'],
+			( !empty($_SERVER['REQUEST_URI_INIT']) ? $_SERVER['REQUEST_URI_INIT'] : $_SERVER['REQUEST_URI'] ),
 			( !empty( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '-' ),
 			$msg );
 		$data = strtr( $data, '<>', '..' );
