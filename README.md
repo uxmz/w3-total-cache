@@ -19,4 +19,8 @@ https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues
 ```
 $ git pull upstream TAG_NANE
 $ git push
+
+$ git fetch -t upstream
+$ git remote update
+$ git push --tags
 ```
