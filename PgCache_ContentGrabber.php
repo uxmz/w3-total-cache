@@ -2228,19 +2228,12 @@ class PgCache_ContentGrabber {
 	 * Log.
 	 */
 	static protected function log( $msg ) {
-<<<<<<< HEAD
-		$data = sprintf( "[%s] [%s] [%s] %s\n", date( 'r' ),
-			( !empty($_SERVER['REQUEST_URI_INIT']) ? $_SERVER['REQUEST_URI_INIT'] : $_SERVER['REQUEST_URI'] ),
-			( !empty( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '-' ),
-			$msg );
-=======
 		$data = sprintf(
 			"[%s] [%s] [%s] %s\n", date( 'r' ),
-			isset( $_SERVER['REQUEST_URI'] ) ? filter_var( stripslashes( $_SERVER['REQUEST_URI'] ), FILTER_SANITIZE_URL ) : '',
+			isset( $_SERVER['REQUEST_URI_INIT'] ) ? filter_var( stripslashes( $_SERVER['REQUEST_URI_INIT'] ), FILTER_SANITIZE_URL ) : '',
 			! empty( $_SERVER['HTTP_REFERER'] ) ? htmlspecialchars( $_SERVER['HTTP_REFERER'] ) : '-',
 			$msg
 		);
->>>>>>> 99eb7edb468794ceefd7679050ce36ade001c18a
 		$data = strtr( $data, '<>', '..' );
 
 		$filename = Util_Debug::log_filename( 'pagecache' );
