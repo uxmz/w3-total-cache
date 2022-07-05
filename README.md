@@ -24,3 +24,13 @@ $ git fetch -t upstream
 $ git remote update
 $ git push --tags
 ```
+
+Create Release on GitHub
+
+### UXMZ Diff
+On Files:
+- PgCache_Plugin.php
+- PgCache_Environment.php
+- PgCache_ContentGrabber.php
+
+https://github.com/uxmz/w3-total-cache/commit/3c55d158c280e7624b4b28d1a8814d410ba0a6c8

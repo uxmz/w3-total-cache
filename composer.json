@@ -10,7 +10,8 @@
 		},
 		{
 			"name": "UX Information Technologies",
-			"homepage": "https://ux.co.mz"
+			"homepage": "https://ux.co.mz",
+			"email": "developers@ux.co.mz"
 		}
 	],
     "require": {
