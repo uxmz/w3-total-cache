@@ -16,10 +16,17 @@
 	],
     "require": {
         "aws/aws-sdk-php": "3.183.8",
-        "guzzlehttp/guzzle": "6.*",
+        "guzzlehttp/guzzle": "6.*|7.*",
         "symfony/polyfill-intl-idn" : "1.20.*",
         "symfony/polyfill-intl-normalizer" : "1.20.*",
-        "symfony/polyfill-mbstring" : "1.20.*"
+        "symfony/polyfill-mbstring" : "1.20.*",
+        "aws/aws-php-sns-message-validator": "^1.8"
+    },
+	"require-dev": {
+        "yoast/phpunit-polyfills": "^1.0",
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3.7",
+        "wp-coding-standards/wpcs": "dev-develop"
     },
     "replace": {
         "symfony/polyfill-php56": "*",
@@ -29,5 +36,10 @@
         "symfony/polyfill-php73": "*",
         "symfony/polyfill-php74": "*",
         "symfony/polyfill-mbstring": "*"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
