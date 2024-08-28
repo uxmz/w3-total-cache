@@ -15,10 +15,6 @@
 		}
 	],
     "require": {
-<<<<<<< HEAD
-        "aws/aws-sdk-php": "3.288.1",
-        "aws/aws-php-sns-message-validator": "^1.8"
-=======
         "aws/aws-sdk-php": "^3.308",
         "aws/aws-php-sns-message-validator": "^1.9",
         "symfony/deprecation-contracts": "^2.5",
@@ -26,7 +22,6 @@
         "sebastian/recursion-context": "^3.0.2",
         "nikic/php-parser": "^4.15.1",
         "microsoft/azure-storage-blob": "^1.5"
->>>>>>> 93938481c7d2058dc9594943cd48a0530816b320
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.10",
