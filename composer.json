@@ -19,7 +19,7 @@
         "aws/aws-php-sns-message-validator": "^1.9",
         "symfony/deprecation-contracts": "^2.5",
         "sebastian/comparator": "^4.0.8",
-        "sebastian/recursion-context": "^3.0.2",
+        "sebastian/recursion-context": "^4.0",
         "nikic/php-parser": "^4.15.1",
         "microsoft/azure-storage-blob": "^1.5"
     },
