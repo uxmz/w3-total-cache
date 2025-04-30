@@ -12,6 +12,7 @@ namespace W3TC;
  *
  * phpcs:disable PSR2.Classes.PropertyDeclaration.Underscore
  * phpcs:disable PSR2.Methods.MethodDeclaration.Underscore
+ * phpcs:disable WordPress.WP.AlternativeFunctions
  */
 class Generic_Plugin_Admin {
 	/**
@@ -304,27 +305,19 @@ class Generic_Plugin_Admin {
 			case 'bunnycdn':
 				$cdn_class = '\W3TC\Cdn_BunnyCdn_Page';
 				break;
+
 			case 'google_drive':
 				$cdn_class = '\W3TC\Cdn_GoogleDrive_Page';
 				break;
-			case 'highwinds':
-				$cdn_class = '\W3TC\Cdn_Highwinds_Page';
-				break;
-			case 'limelight':
-				$cdn_class = '\W3TC\Cdn_LimeLight_Page';
-				break;
+
 			case 'rackspace_cdn':
 				$cdn_class = '\W3TC\Cdn_RackSpaceCdn_Page';
 				break;
+
 			case 'rscf':
 				$cdn_class = '\W3TC\Cdn_RackSpaceCloudFiles_Page';
 				break;
-			case 'stackpath':
-				$cdn_class = '\W3TC\Cdn_StackPath_Page';
-				break;
-			case 'stackpath2':
-				$cdn_class = '\W3TC\Cdn_StackPath2_Page';
-				break;
+
 			default:
 				break;
 		}
@@ -341,21 +334,15 @@ class Generic_Plugin_Admin {
 			case 'bunnycdn':
 				$cdnfsd_class = '\W3TC\Cdnfsd_BunnyCdn_Page';
 				break;
+
 			case 'cloudflare':
 				$cdnfsd_class = '\W3TC\Extension_CloudFlare_Page';
 				break;
+
 			case 'cloudfront':
 				$cdnfsd_class = '\W3TC\Cdnfsd_CloudFront_Page';
 				break;
-			case 'limelight':
-				$cdnfsd_class = '\W3TC\Cdnfsd_LimeLight_Page';
-				break;
-			case 'stackpath':
-				$cdnfsd_class = '\W3TC\Cdnfsd_StackPath_Page';
-				break;
-			case 'stackpath2':
-				$cdnfsd_class = '\W3TC\Cdnfsd_StackPath2_Page';
-				break;
+
 			default:
 				break;
 		}
@@ -900,7 +887,7 @@ class Generic_Plugin_Admin {
 					'content' => $content,
 				)
 			);
-			$n++;
+			++$n;
 		}
 	}
 
@@ -1221,7 +1208,7 @@ class Generic_Plugin_Admin {
 
 			foreach ( $r['before_errors'] as $e ) {
 				$errors[ 'generic_env_' . $n ] = $e;
-				$n++;
+				++$n;
 			}
 
 			if ( strlen( $r['required_changes'] ) > 0 ) {
@@ -1264,7 +1251,7 @@ class Generic_Plugin_Admin {
 
 			foreach ( $r['later_errors'] as $e ) {
 				$errors[ 'generic_env_' . $n ] = $e;
-				$n++;
+				++$n;
 			}
 		}
 
@@ -1313,7 +1300,9 @@ class Generic_Plugin_Admin {
 	}
 
 	/**
-	 * Run post-update tasks.
+	 * Run post-update admin tasks.
+	 *
+	 * Post-update admin tasks are run only once per version.
 	 *
 	 * @since 2.8.1
 	 *
@@ -1324,25 +1313,48 @@ class Generic_Plugin_Admin {
 	public function post_update_tasks(): void {
 		// Check if W3TC was updated.
 		$state            = Dispatcher::config_state();
-		$last_run_version = $state->get_string( 'tasks.last_run_version' );
+		$last_run_version = $state->get_string( 'tasks.admin.last_run_version' );
 
-		if ( empty( $last_run_version ) || version_compare( W3TC_VERSION, $last_run_version, '>' ) ) {
-			switch ( W3TC_VERSION ) {
-				case '2.8.1':
-					// Fix environment.
-					Util_Admin::fix_on_event( $this->_config, 'w3tc_plugin_updated' );
+		if ( empty( $last_run_version ) || \version_compare( W3TC_VERSION, $last_run_version, '>' ) ) {
+			$ran_versions  = get_option( 'w3tc_post_update_admin_tasks_ran_versions', array() );
+			$has_completed = false;
 
-					// Adjust "objectcache.file.gc".
-					if ( $this->_config->get_integer( 'objectcache.file.gc' ) === 3600 ) {
-						$this->_config->set( 'objectcache.file.gc', 600 );
-						$this->_config->save();
-					}
-					break;
-				default:
-					break;
+			// Check if W3TC was updated to 2.8.1 or higher and not already run.
+			if ( \version_compare( W3TC_VERSION, '2.8.1', '>=' ) && ! in_array( '2.8.1', $ran_versions, true ) ) {
+				// Fix environment.
+				Util_Admin::fix_on_event( $this->_config, 'w3tc_plugin_updated' );
+
+				// Adjust "objectcache.file.gc".
+				if ( $this->_config->get_integer( 'objectcache.file.gc' ) === 3600 ) {
+					$this->_config->set( 'objectcache.file.gc', 600 );
+					$this->_config->save();
+				}
+
+				// Mark the task as ran.
+				$ran_versions[] = '2.8.1';
+				$has_completed  = true;
 			}
 
-			$state->set( 'tasks.last_run_version', W3TC_VERSION );
+			// Check if W3TC was updated to 2.8.6 or higher and not already run.
+			if ( \version_compare( W3TC_VERSION, '2.8.6', '>=' ) && ! in_array( '2.8.6', $ran_versions, true ) ) {
+				// Delete old option.
+				delete_option( 'w3tc_post_update_tasks_ran_versions' );
+
+				// Null old state key.
+				$state->set( 'tasks.last_run_version', null );
+
+				// Mark the task as ran.
+				$ran_versions[] = '2.8.6';
+				$has_completed  = true;
+			}
+
+			// Mark completed tasks as ran.
+			if ( $has_completed ) {
+				update_option( 'w3tc_post_update_admin_tasks_ran_versions', $ran_versions, false );
+			}
+
+			// Mark the task runner as ran for the current version.
+			$state->set( 'tasks.admin.last_run_version', W3TC_VERSION );
 			$state->save();
 		}
 	}
