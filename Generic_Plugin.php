@@ -59,6 +59,13 @@ class Generic_Plugin {
 	 * @return void
 	 */
 	public function run() {
+		if (
+			'cache' === $this->_config->get_string( 'pgcache.rest' ) &&
+			! Util_Environment::is_w3tc_pro( $this->_config )
+		) {
+			Dispatcher::component( 'Licensing_Plugin_Admin' )->release_pro_rest_cache_if_unlicensed();
+		}
+
 		add_filter( 'cron_schedules', array( $this, 'cron_schedules' ), 5 ); // phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
 		add_action( 'w3tc_purge_all_wpcron', array( $this, 'w3tc_purgeall_wpcron' ) );
 
@@ -1149,7 +1156,7 @@ class Generic_Plugin {
 	 * @return bool
 	 */
 	private function should_ob_process_rest() {
-		return 'cache' === $this->_config->get_string( 'pgcache.rest' );
+		return Util_Environment::is_rest_cache_active( $this->_config );
 	}
 
 	/**
@@ -1185,12 +1192,6 @@ class Generic_Plugin {
 		if ( 'logged_out' === $action ) {
 			foreach ( $rejected_roles as $role ) {
 				Util_Cookie::clear( 'w3tc_logged_' . Util_Cookie::role_cookie_name( $role ) );
-				/**
-				 * One-release back-compat: also clear the legacy MD5-named
-				 * cookie so an upgrade doesn't leave a stale bypass-cookie
-				 * behind. Drop this `clear()` call in the next release.
-				 */
-				Util_Cookie::clear( 'w3tc_logged_' . Util_Cookie::role_cookie_name_legacy( $role ) );
 			}
 
 			return;
